@@ -2,6 +2,8 @@
 
 Virtual Bluetooth® keyboard and mouse
 
+## Update (2012-06-27) - see bottom of page
+
 ## What is this about?
 
 The hidclient program makes a Bluetooth® technology equipped computer appear as a Bluetooth® keyboard and mouse device to other machines. Input events (like keystrokes and mouse movements) of the locally attached input devices will be forwarded to another machine via the Bluetooth® link.
@@ -61,3 +63,33 @@ Well, you may use it, read the source code, give the files to other people, chan
 
 This program is "free software" (both as in speech and in beer), you do not need to pay any royalties for using it. Keep with the GPL.
 
+## Update (2012-07-28)
+
+hidclient is verified to work on Ubuntu 12.04 LTS / amd64. There have been a few updates and feature additions:
+
+* Command-line parameter "-l" to list input devices
+* -e<NUM> to ONLY bind to device Number NUM (see -l List)
+* -x will "mute" the device(s) for X11 so you can start hidclient while having a X11 session.
+* -fFIFONAME will read data from a FIFO instead of event devices.
+
+New source file can be found in tar archive.
+
+Slightly different installation instructions:
+
+Unpack archive. Compile hidclient.c with
+
+    gcc -o hidclient -O2 -lbluetooth -Wall hidclient.c
+
+You don't need to copy anything into /etc/bluetooth. Might be a good idea to edit /etc/bluetooth/main.conf and set "DisabledPlugins=input" there, and "Class=0x000540" - that helps identifying the device as a "keyboard". Now run
+
+    sudo ./hidclient -l
+
+to list the available input devices. If you have for example two usb mice and want to export only one (while working locally on the other), select the ID number from the first column.
+
+Start hidclient with
+
+    sudo ./hidclient -e4 -x
+
+where 4 is the number of your mouse. Hidclient will wait for bluetooth connections. The mouse should stop working on the local PC, so it will not interfere with your normal computer usage while it is connected to another device.
+
+With the -x parameter, you can ignore the "openvt" mentioned above.
